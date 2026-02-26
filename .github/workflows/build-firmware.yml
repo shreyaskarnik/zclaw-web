@@ -1,0 +1,92 @@
+name: Build Firmware
+
+on:
+  workflow_dispatch:
+    inputs:
+      zclaw_ref:
+        description: "zclaw git ref to build (branch, tag, or SHA)"
+        required: false
+        default: "main"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [esp32c3, esp32s3, esp32c6]
+    container:
+      image: espressif/idf:v5.4
+    env:
+      ZCLAW_REF: ${{ github.event.inputs.zclaw_ref || 'main' }}
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Clone zclaw
+        run: |
+          git clone https://github.com/tnm/zclaw.git /tmp/zclaw
+          cd /tmp/zclaw
+          git checkout "$ZCLAW_REF"
+
+      - name: Build firmware
+        working-directory: /tmp/zclaw
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          . $IDF_PATH/export.sh
+          idf.py set-target "$TARGET"
+          idf.py build
+
+      - name: Merge binary
+        working-directory: /tmp/zclaw
+        env:
+          TARGET: ${{ matrix.target }}
+        run: |
+          . $IDF_PATH/export.sh
+          esptool.py --chip "$TARGET" merge_bin \
+            -o "/tmp/zclaw-${TARGET}.bin" \
+            --flash_mode dio \
+            --flash_size 4MB \
+            0x0 build/bootloader/bootloader.bin \
+            0x8000 build/partition_table/partition-table.bin \
+            0xe000 build/ota_data_initial.bin \
+            0x20000 build/zclaw.bin
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zclaw-${{ matrix.target }}
+          path: /tmp/zclaw-${{ matrix.target }}.bin
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      ZCLAW_REF: ${{ github.event.inputs.zclaw_ref || 'main' }}
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Download all firmware artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: firmware-artifacts
+
+      - name: Copy binaries to firmware/
+        run: |
+          mkdir -p firmware
+          cp firmware-artifacts/zclaw-esp32c3/zclaw-esp32c3.bin firmware/
+          cp firmware-artifacts/zclaw-esp32s3/zclaw-esp32s3.bin firmware/
+          cp firmware-artifacts/zclaw-esp32c6/zclaw-esp32c6.bin firmware/
+
+      - name: Commit firmware binaries
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add firmware/
+          git diff --cached --quiet && echo "No changes" && exit 0
+          SHORT_REF="$(echo "$ZCLAW_REF" | head -c 8)"
+          git commit -m "chore: update firmware binaries (zclaw@${SHORT_REF})"
+          git push
