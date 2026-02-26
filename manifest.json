@@ -1,0 +1,25 @@
+{
+  "name": "zclaw",
+  "version": "0.1.0",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [
+        { "path": "firmware/zclaw-esp32c3.bin", "offset": 0 }
+      ]
+    },
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        { "path": "firmware/zclaw-esp32s3.bin", "offset": 0 }
+      ]
+    },
+    {
+      "chipFamily": "ESP32-C6",
+      "parts": [
+        { "path": "firmware/zclaw-esp32c6.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
