@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>zclaw — Install</title>
+  <script
+    type="module"
+    src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"
+  ></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 480px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-size: 1.1rem;
+      color: #8888aa;
+      margin-bottom: 2.5rem;
+    }
+
+    .install-section {
+      margin-bottom: 2.5rem;
+    }
+
+    esp-web-install-button {
+      display: inline-block;
+    }
+
+    esp-web-install-button button {
+      background: #4a6cf7;
+      color: #ffffff;
+      border: none;
+      padding: 0.9rem 2.2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    esp-web-install-button button:hover {
+      background: #3b5de7;
+    }
+
+    .no-serial {
+      display: none;
+      color: #ff6b6b;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    .boards {
+      font-size: 0.9rem;
+      color: #6a6a8a;
+      margin-bottom: 1.5rem;
+    }
+
+    .boards span {
+      display: inline-block;
+      background: #2a2a4a;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      margin: 0.2rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #aaaacc;
+    }
+
+    .note {
+      font-size: 0.8rem;
+      color: #555570;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    footer {
+      font-size: 0.8rem;
+      color: #444460;
+    }
+
+    footer a {
+      color: #4a6cf7;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>zclaw</h1>
+    <p class="tagline">The smallest AI assistant for ESP32</p>
+
+    <div class="install-section">
+      <esp-web-install-button manifest="manifest.json">
+        <button slot="activate">Install zclaw</button>
+        <span slot="unsupported" class="no-serial">
+          Your browser does not support Web Serial.<br>
+          Use Google Chrome or Microsoft Edge on desktop.
+        </span>
+        <span slot="not-allowed" class="no-serial">
+          Serial access was denied. Reload and try again.
+        </span>
+      </esp-web-install-button>
+    </div>
+
+    <div class="boards">
+      Supported boards:
+      <span>ESP32-C3</span>
+      <span>ESP32-S3</span>
+      <span>ESP32-C6</span>
+    </div>
+
+    <p class="note">
+      Connect your ESP32 board via USB, click Install, and select the serial port.<br>
+      The correct firmware will be selected automatically based on your chip.
+    </p>
+
+    <footer>
+      <a href="https://github.com/tnm/zclaw" target="_blank" rel="noopener">zclaw on GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>
