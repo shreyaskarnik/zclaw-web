@@ -4,6 +4,12 @@
   "new_install_prompt_erase": true,
   "builds": [
     {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "firmware/zclaw-esp32.bin", "offset": 0 }
+      ]
+    },
+    {
       "chipFamily": "ESP32-C3",
       "parts": [
         { "path": "firmware/zclaw-esp32c3.bin", "offset": 0 }
