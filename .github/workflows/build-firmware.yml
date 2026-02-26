@@ -89,4 +89,5 @@ jobs:
           git diff --cached --quiet && echo "No changes" && exit 0
           SHORT_REF="$(echo "$ZCLAW_REF" | head -c 8)"
           git commit -m "chore: update firmware binaries (zclaw@${SHORT_REF})"
+          git pull --rebase
           git push
