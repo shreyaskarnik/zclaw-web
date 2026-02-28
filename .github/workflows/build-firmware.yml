@@ -28,12 +28,6 @@ jobs:
           cd /tmp/zclaw
           git checkout "$ZCLAW_REF"
 
-      - name: Configure UART channel for ESP32
-        if: matrix.target == 'esp32'
-        working-directory: /tmp/zclaw
-        run: |
-          echo "CONFIG_ZCLAW_CHANNEL_UART=y" >> sdkconfig.defaults
-
       - name: Build firmware
         working-directory: /tmp/zclaw
         env:
